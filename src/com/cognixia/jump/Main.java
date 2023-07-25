@@ -33,7 +33,7 @@ public class Main {
 			
 		} catch (ClassNotFoundException | SQLException e1) {
 			
-			System.out.println("\nCould not connect to the Chef Database, application cannot run at this time.");
+			System.out.println("\nCould not connect to the Books Database, application cannot run at this time.");
 		}
 		
 		// TEST THE REST OF YOUR METHODS IN THE DAO FROM THIS LINE FORWARD
