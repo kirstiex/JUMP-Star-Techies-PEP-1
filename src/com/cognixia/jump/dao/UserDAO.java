@@ -11,8 +11,8 @@ public interface UserDAO {
 	// as well, this method will help with closing the connection
 	public void closeConnection() throws SQLException ;
 		
-	// Find user by username
-	public List<User> findByUsername(String username);
+	// User Login
+	public boolean userLogIn(String username, String passoword);
 	
 	// Sign up new user
 	public User signUp(User user);
