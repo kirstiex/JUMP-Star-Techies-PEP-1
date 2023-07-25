@@ -1,6 +1,7 @@
 package com.cognixia.jump.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,8 +49,32 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User signUp(User user) {
-		// TODO Auto-generated method stub
-		return null;
+//		Connection conn = null;
+//		
+//		try {
+//			conn = ConnectionManager.getConnection();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		String sql = "INSERT INTO user " +
+//					"VALUES(null, ?, ?, ?);";
+//		
+//		try {
+//			PreparedStatement pstmt = conn.prepareStatement(sql);
+//			pstmt.setString(1, user.getUsername());
+//			pstmt.setString(2, user.getPassword());
+//			pstmt.setString(3, user.getStatus());
+//			
+//			pstmt.executeUpdate();
+//			
+//			User user = new User(-1, username, password, "user");
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+		return user;
 	}
 
 }
