@@ -64,8 +64,3 @@ CREATE TABLE books_trackers (
 
 alter table users auto_increment = 1000;
 INSERT INTO users values ();
-
-
-####################
-#   BOOKS   #
-####################
