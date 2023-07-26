@@ -323,5 +323,38 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			return result;
 		}
 
+		@Override
+		public boolean removeBookFromTracker(int tracker_id, Book book) {
+boolean result = false;
+			
+			Connection conn = null;
+			try {
+				conn = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			String sql = "delete from books_trackers"
+						+ "where book_id = ? and tracker_id = ?;";
+			
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, book.getId());
+				pstmt.setInt(2, tracker_id);
+				
+				
+				pstmt.executeUpdate();
+				result = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return result;
+		}
+
 }
 

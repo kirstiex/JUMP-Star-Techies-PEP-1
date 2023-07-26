@@ -57,4 +57,7 @@ public interface BooksTrackerDAO {
 	// Update book status in user's tracker
 	public boolean updateBookStatus(String completion, int tracker_id, Book book);
 	
+	// REmove book from user's tracker
+	public boolean removeBookFromTracker(int tracker_id, Book book);
+	
 }
