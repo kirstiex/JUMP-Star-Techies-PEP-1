@@ -207,6 +207,28 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			}
 			return credential_check;
 		}
+		
+		@Override
+		public int getUserTrackerId(User user) {
+			int user_tracker_id = -1;
+			
+			try {
+				Connection conn = ConnectionManager.getConnection();
+				Statement stmt = conn.createStatement();
+				
+				ResultSet rs = stmt.executeQuery("select trackers.tracker_id from users"
+												+ "join trackers on trackers.user_id = users.user_id\r\n"
+												+ "where users.user_id = " + user.getId());
+				
+				if(rs.next()) {
+					user_tracker_id = rs.getInt(1);
+				}
+			} catch (SQLException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			return user_tracker_id;
+		}
 
 		@Override
 		public List<Book> getAllByUserId(User user) {
@@ -233,15 +255,73 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public boolean addBookToTracker(Book book) {
-			// TODO Auto-generated method stub
-			return false;
+		public boolean addBookToTracker(Book book, int tracker_id, String completion) {
+			boolean result = false;
+			
+			Connection conn = null;
+			try {
+				conn = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			String sql = "insert into books_trackers(book_id, tracker_id, completion)"
+						+ "values (?, ?, ?)";
+			
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, book.getId());
+				pstmt.setInt(2, tracker_id);
+				pstmt.setString(3, completion);
+				
+				pstmt.executeUpdate();
+				result = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return result;
 		}
 
 		@Override
-		public boolean updateBookStatus(String status) {
-			// TODO Auto-generated method stub
-			return false;
+		public boolean updateBookStatus(String completion, int tracker_id, Book book) {
+			
+			boolean result = false;
+			
+			Connection conn = null;
+			try {
+				conn = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			String sql = "update books_trackers"
+						+ "set completion = ?"
+						+ "where book_id = ? and tracker_id = ?;";
+			
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, completion);
+				pstmt.setInt(2, book.getId());
+				pstmt.setInt(3, tracker_id);
+				
+				
+				pstmt.executeUpdate();
+				result = true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			return result;
 		}
+
 }
 
