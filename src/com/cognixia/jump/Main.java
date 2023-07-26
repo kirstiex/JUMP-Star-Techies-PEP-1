@@ -23,7 +23,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MainDAO booksDao = new BooksDAOImpl();
+		BooksDAO booksDao = new BooksDAOImpl();
 		
 		// Call establishConnection() first to make sure you are connected to the chef database before
 		// you call any other methods
