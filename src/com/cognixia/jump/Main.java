@@ -1,10 +1,15 @@
 package com.cognixia.jump;
 
 import java.sql.SQLException;
-import java.util.Optional;
-import java.util.Scanner; 
+//import java.util.Optional;
+import java.util.Scanner;
+
+import com.cognixia.jump.dao.Book;
 import com.cognixia.jump.dao.BooksTrackerDAO;
 import com.cognixia.jump.dao.BooksTrackerDAOImpl;
+import com.cognixia.jump.dao.User;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 	Use this class as a way to test out your DAO and make sure it is working properly. There is no need 
@@ -23,20 +28,40 @@ public class Main {
 	public static void main(String[] args) {
 		
 
-		BooksTrackerDAO booksDao = new BooksTrackerDAOImpl();
+		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
 
 		
 		// Call establishConnection() first to make sure you are connected to the chef database before
 		// you call any other methods
 		try {
-			booksDao.establishConnection();	
+			booksTrackerDao.establishConnection();	
 			
 		} catch (ClassNotFoundException | SQLException e1) {
 			
 			System.out.println("\nCould not connect to the Books Database, application cannot run at this time.");
 		}
-	}
+	
 		// TEST THE REST OF YOUR METHODS IN THE DAO FROM THIS LINE FORWARD
+		Scanner input = new Scanner(System.in);
+		displayMenu();
+		User user = getInitialChoice(input);
+		if (user != null) {
+			getUserChoice(user, null, 0, null, input);
+		}
+		
+		
+		
+		
+		
+		input.close();
+		// once done, always close your connection
+		try {
+			booksTrackerDao.closeConnection();
+		} catch (SQLException e) {
+			System.out.println("Could not close connection properly");
+		}
+	}
+
 			
 			//print the menu to the command line. 
 	public static void displayMenu() {
@@ -51,12 +76,11 @@ public class Main {
 	}
 	
 	public static void loginMenu() {
-		System.out.println("1 - Update a tracker");
-		System.out.println("2 - delete a book in the tracker");
-		System.out.println("3 - view all books in the tracker");
-		System.out.println("4 - add a book to tracker");
-		System.out.println("5 - find a book in the tracker");
-		System.out.println("6 - Quit"); 
+		System.out.println("1 - View all books in the tracker");
+		System.out.println("2 - Add a book to tracker");
+		System.out.println("3 - Update a book in tracker");
+		System.out.println("4 - Delete a book in the tracker");
+		System.out.println("5 - Quit"); 
 		
 	}
 			
@@ -67,55 +91,88 @@ public class Main {
 	}
 	
 	public static int getUserInput(Scanner input) {
-		System.out.print("Enter a number 1 - 4 : ");
+		System.out.print("Enter a number 1 - 5 : ");
 		int userChoice = input.nextInt();
 		return userChoice;
 	}
 	
-	public void getInitialChoice(Scanner input) {
-		int choice;
-		do {
-			choice = getUserInput(input);
-					
-		switch (choice) {
-		case 1:
-			BookTrackerDAO.getall();
-		case 2:
-			//login
-			String name;
-			String password;
-			
-			BooksTrackerDAO.userLogIn(name, password);
-			
-		case 3:
-			//quit
-			System.out.println("Thank you. Have a great day!");
-			break;
-		default:
-			System.out.println("Not a valid input. Try again");
-			
+	static String[] getCredential() {
+		Scanner input = new Scanner(System.in);
+		String[] user = new String[2];
+		for (int i = 0; i < user.length; i++) {
+			if (i == 0) {
+				System.out.println("Please enter username: ");
+				user[0] = input.nextLine();
+			} else {
+				System.out.println("Please enter password: ");
+				user[1] = input.nextLine();
 			} 
-		} while(choice != 6);
+		}
+		return user;
 	}
+	
+	
+	public static User getInitialChoice(Scanner input) {
+		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
+		int choice = getInitialInput(input);
+
+		switch (choice) {
+			case 1:
+				List<Book> books = new ArrayList<Book>();
+				books = booksTrackerDao.getAll();
+				System.out.println(books);
+//				for (int i = 0; i < books.size(); i++) {
+//					System.out.println(books[i]);
+//				}
+				break;
+			case 2:
+				//login
+				String[] user = getCredential();
+				
+				boolean check = booksTrackerDao.userLogIn(user[0], user[1]);
+				
+				if (check) {
+					System.out.println("Log in successfully!");
+					User login_user = new User(-1, user[0], user[1]);
+					loginMenu();
+					return login_user;
+				}
+				else {
+					System.out.println("Incorrect credentials");
+					displayMenu();
+				}
+				break;
+			case 3:
+				//quit
+				System.out.println("Thank you. Have a great day!");
+				break;
+			default:
+				System.out.println("Not a valid input. Try again");
+				
+		}
+		return null; 
+	}
+	
 			
-	public void getUserChoice(Scanner input) {
+	public static void getUserChoice(User user,Book book,int tracker_id, String completion, Scanner input) {
+		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
 		int choice;
 		do {
 			choice = getUserInput(input);
 					
 		switch (choice) {
 		case 1:
-			//update tracker
-			BooksTrackerDAO.findById(tracker_id);
-		case 2:
-			//delete a book in tracker
-			BooksTrackerDAO.delete();
-		case 3:
 			//view all books in tracker
-			
-		case 4:
+			booksTrackerDao.getAllByUserId(user);
+		case 2:
 			//add a book to the tracker
-			
+			booksTrackerDao.addBookToTracker(book, tracker_id, completion);
+		case 3:
+			//Update book status in user's tracker
+			booksTrackerDao.updateBookStatus(completion, tracker_id, book);
+		case 4:
+			//delete a book in tracker
+			booksTrackerDao.removeBookFromTracker(tracker_id, book);
 		case 5:
 			//quit
 			System.out.println("Thank you. Have a great day!");
@@ -126,8 +183,8 @@ public class Main {
 			} 
 		} while(choice != 6);
 	}
-}
 
+}
 
 	
 
@@ -163,12 +220,4 @@ public class Main {
 		
 		
 		
-		// once done, always close your connection
-				try {
-					booksDao.closeConnection();
-				} catch (SQLException e) {
-					System.out.println("Could not close connection properly");
-				}
-			}
-		
-	}
+	
