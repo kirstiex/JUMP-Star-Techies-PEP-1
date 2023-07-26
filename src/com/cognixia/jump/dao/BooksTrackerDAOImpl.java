@@ -195,10 +195,10 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				Connection conn = ConnectionManager.getConnection();
 				Statement stmt = conn.createStatement();
 				
-				ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username=" + username);
+				ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE username='" + username + "';");
 				
 				if(rs.next()) {
-					if (rs.getString(2) == password) {
+					if (rs.getString(3).equals(password)) {
 						credential_check = true;
 					}
 				}
