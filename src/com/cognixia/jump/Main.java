@@ -1,8 +1,8 @@
 package com.cognixia.jump;
 
 import java.sql.SQLException;
-import com.cognixia.jump.dao.BooksDAO;
-import com.cognixia.jump.dao.BooksDAOImpl;
+import com.cognixia.jump.dao.BooksTrackerDAO;
+import com.cognixia.jump.dao.BooksTrackerDAOImpl;
 
 /*
 	Use this class as a way to test out your DAO and make sure it is working properly. There is no need 
@@ -23,7 +23,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		MainDAO booksDao = new BooksDAOImpl();
+		BooksTrackerDAO booksDao = new BooksTrackerDAOImpl();
 		
 		// Call establishConnection() first to make sure you are connected to the chef database before
 		// you call any other methods
