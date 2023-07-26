@@ -25,166 +25,137 @@ DAO CLASS
 - Hint: Take a look at the DAO interface file for extra details on how to complete methods
 */
 
-public class BooksDAOImpl implements BooksDAO{
-		
-		private Connection connection = null;
+public class BooksDAOImpl implements BooksDAO {
 
-		@Override
-		public void establishConnection() throws ClassNotFoundException, SQLException {
-			
-			if(connection == null) {
-				connection = ConnectionManager.getConnection();
-			}
-		}
-		
-		@Override
-		public void closeConnection() throws SQLException {
-			connection.close();
-		}
-		
-		
-		
-		// -----------------------------------------------
-		// PROVIDE IMPLEMENTATIONS FOR ALL METHODS BELOW
-		// -----------------------------------------------
-	
-		@Override
-		public List<Book> getAll(){
-			// TODO Auto-generated method stub
-			List<Book> book = new ArrayList<>();
-			
-			Connection conn = null;
-			try {
-				conn = ConnectionManager.getConnection();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-			Statement stmt = null;
-			try {
-				stmt = conn.createStatement();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			ResultSet rs = null;
-			try {
-				rs = stmt.executeQuery("SELECT * FROM books");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			try {
-				while(rs.next()) {
-					try {
-						book.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return book;
-		}
+    private Connection connection = null;
 
-		@Override
-		public Optional<Book> findById(int id) throws ClassNotFoundException, SQLException {
-			// TODO Auto-generated method stub
-			Connection conn = ConnectionManager.getConnection();
-			   try {
-			        Statement stmt = conn.createStatement();
-			        ResultSet rs = stmt.executeQuery("SELECT * FROM chef WHERE id = " + id);
+    @Override
+    public void establishConnection() throws ClassNotFoundException, SQLException {
 
-			        if (rs.next()) {
-			            return Optional.of(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
-			        } else {
-			            return Optional.empty();
-			        }
-			    } catch (SQLException e) {
-			        e.printStackTrace();
-			        return Optional.empty();
-			    }
-		}
+        if (connection == null) {
+            connection = ConnectionManager.getConnection();
+        }
+    }
 
-		@Override
-		public boolean update(Book book) throws ClassNotFoundException, SQLException {
-			Connection conn = ConnectionManager.getConnection();
-			try {
-				String query = "UPDATE book SET book_name = ?, book_Author = ?, WHERE id = ?";
-		        PreparedStatement pstmt = conn.prepareStatement(query);
-		        
-		        //Set the values
-		        pstmt.setString(1, book.getBook_name());
-		        pstmt.setString(2, book.getAuthor());
-		        pstmt.setInt(3, book.getId());
-		        
-		        int rowsUpdated = pstmt.executeUpdate();
-		        
-		        return rowsUpdated > 0;
-			} catch (SQLException e) {
-				e.printStackTrace();
-				return false;    
-			}
-		}
+    @Override
+    public void closeConnection() throws SQLException {
+        connection.close();
+    }
 
-		@Override
-		public boolean delete(int id) {
-			Connection conn = null;
-		    PreparedStatement pstmt = null;
-		    
-		    try {
-		        conn = ConnectionManager.getConnection();
-		        String query = "DELETE FROM book WHERE id = ?";
-		        pstmt = conn.prepareStatement(query);
+    // -----------------------------------------------
+    // PROVIDE IMPLEMENTATIONS FOR ALL METHODS BELOW
+    // -----------------------------------------------
 
-		        // Set the value for the placeholder in the prepared statement
-		        pstmt.setInt(1, id);
+    @Override
+    public List<Book> getAll() {
+        List<Book> book = new ArrayList<>();
 
-		        int rowsDeleted = pstmt.executeUpdate();
+        Statement stmt;
+        try {
+            stmt = connection.createStatement();
 
-		        // Check if any rows were deleted and return true if at least one row was deleted
-		        return rowsDeleted > 0;
-		    } catch (SQLException | ClassNotFoundException e) {
-		        e.printStackTrace();
-		        return false;
-		        
-		    }
-		}
-			
+            ResultSet rs = stmt.executeQuery("SELECT * FROM books");
 
-		@Override
-		public Book add(Book book) throws ClassNotFoundException, SQLException {
-		
-			Connection conn = ConnectionManager.getConnection();
-			try {
-				String query = "INSERT INTO chef(book_name, author, book_id) VALUES (?,?,?)";
-		        PreparedStatement pstmt = conn.prepareStatement(query);
-		        
-		        //Set the values
-		        pstmt.setString(1, book.getBook_name());
-		        pstmt.setString(2, book.getAuthor());
-		        pstmt.setInt(3, book.getId());
-		        
-		        int rowsAdded = pstmt.executeUpdate();
-		        
-		        if(rowsAdded > 0) {
-		        	return book;
-		        }
-		        
-			} catch (SQLException e) {
-				e.printStackTrace();
-				  
-			} return null;  
-		}
+            while (rs.next()) {
+
+                book.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return book;
+    }
+
+    @Override
+    public Optional<Book> findById(int id) {
+
+        Statement stmt;
+        try {
+            stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM book WHERE id = " + id);
+
+            if (rs.next()) {
+                return Optional.of(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean update(Book book) {
+
+        String query = "UPDATE book SET book_name = ?, book_Author = ?, WHERE id = ?";
+        PreparedStatement pstmt;
+        boolean checkUpdate = false;
+        try {
+            pstmt = connection.prepareStatement(query);
+
+            // Set the values
+            pstmt.setString(1, book.getBook_name());
+            pstmt.setString(2, book.getAuthor());
+            pstmt.setInt(3, book.getId());
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                checkUpdate = true;
+            } else {
+                checkUpdate = false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return checkUpdate;
+    }
+
+    @Override
+    public boolean delete(int id) {
+        String query = "DELETE FROM book WHERE id = ?";
+        PreparedStatement pstmt;
+        boolean checkDeleted = false;
+        try {
+            pstmt = connection.prepareStatement(query);
+            // Set the value for id
+            pstmt.setInt(1, id);
+
+            // Check if any rows were deleted and return true if at least one row was
+            // deleted
+            int rowsDeleted = pstmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                checkDeleted = true;
+            } else {
+                checkDeleted = false;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return checkDeleted;
+    }
+
+    @Override
+    public Book add(Book book) {
+
+        String query = "INSERT INTO book(book_name, author, book_id) VALUES (?,?,?)";
+        // Set the values
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setString(1, book.getBook_name());
+
+            pstmt.setString(2, book.getAuthor());
+            pstmt.setInt(3, book.getId());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+        }
+        return book;
+    }
 }
-
