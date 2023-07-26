@@ -73,7 +73,7 @@ public class BooksDAOImpl implements BooksDAO {
         Statement stmt;
         try {
             stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM book WHERE id = " + id);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM books WHERE book_id = " + id);
 
             if (rs.next()) {
                 return Optional.of(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
@@ -90,7 +90,7 @@ public class BooksDAOImpl implements BooksDAO {
     @Override
     public boolean update(Book book) {
 
-        String query = "UPDATE book SET book_name = ?, book_Author = ?, WHERE id = ?";
+        String query = "UPDATE books SET book_name = ?, author = ?, WHERE book_id = ?";
         PreparedStatement pstmt;
         boolean checkUpdate = false;
         try {
@@ -116,7 +116,7 @@ public class BooksDAOImpl implements BooksDAO {
 
     @Override
     public boolean delete(int id) {
-        String query = "DELETE FROM book WHERE id = ?";
+        String query = "DELETE FROM books WHERE book_id = ?";
         PreparedStatement pstmt;
         boolean checkDeleted = false;
         try {
@@ -142,7 +142,7 @@ public class BooksDAOImpl implements BooksDAO {
     @Override
     public Book add(Book book) {
 
-        String query = "INSERT INTO book(book_name, author, book_id) VALUES (?,?,?)";
+        String query = "INSERT INTO books(book_name, author, book_id) VALUES (?,?,?)";
         // Set the values
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
