@@ -49,7 +49,7 @@ CREATE TABLE books (
 CREATE TABLE books_trackers (
     book_id INT NOT NULL,
     tracker_id INT NOT NULL,
-    completion enum('not completed', 'in-progress', 'completed') NOT NULL,
+    completion enum('added to list', 'started', 'completed') NOT NULL,
     CONSTRAINT pk_books_trackers
         PRIMARY KEY(book_id, tracker_id),
     CONSTRAINT fk_books_trackers
