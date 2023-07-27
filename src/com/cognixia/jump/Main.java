@@ -25,7 +25,7 @@ import java.util.List;
 
 public class Main {
 
-	private static User loggedInUser;
+	//private static User loggedInUser;
 	
 	public static void main(String[] args) {
 
@@ -45,11 +45,11 @@ public class Main {
 		// TEST THE REST OF YOUR METHODS IN THE DAO FROM THIS LINE FORWARD
 		Scanner input = new Scanner(System.in);
 		displayMenu();
-		User loggedInUser = getInitialChoice(input);
+		User LoggedInUser = getInitialChoice(input);
 		
 		//try {
-			if (loggedInUser != null) {
-				getUserChoice(loggedInUser, null, 0, null, input);
+			if (LoggedInUser != null) {
+				getUserChoice(LoggedInUser, null, 0, null, input);
 			} 
 		//} catch (SQLException e) {
 	//		System.out.println("Could not close connection properly");
@@ -64,9 +64,9 @@ public class Main {
 		}
 	}
 
-	public static User getLoggedInUser() {
-        return loggedInUser;
-    }
+	//public static User getLoggedInUser() {
+   //     return loggedInUser;
+   // }
 	
 	// print the menu to the command line.
 	public static void displayMenu() {
@@ -171,9 +171,10 @@ public class Main {
 
 				if (check) {
 					System.out.println("Log in successfully!");
-					User login_user = new User(-1, user[0], user[1]);
+					//need to change this to return the logged in user. 
+					User LoggedInUser = new User(2, user[0], user[1]);
 					loginMenu();
-					return login_user;
+					return LoggedInUser;
 				} else {
 					System.out.println("Incorrect credentials");
 					displayMenu();

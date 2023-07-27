@@ -244,8 +244,8 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 												+ "from books " 
 												+ "join books_trackers on books.book_id = books_trackers.book_id "
 												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id "
-												+ "join users on users.user_id = trackers.user_id"
-												+ "where users.user_id =" + Main.getLoggedInUser().getId() +";");
+												+ "join users on users.user_id = trackers.user_id "
+												+ "where users.user_id =" + user.getId() +";");
 				
 				while(rs.next()) {
 					tracker.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
