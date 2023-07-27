@@ -5,10 +5,10 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.cognixia.jump.dao.Book;
-import com.cognixia.jump.dao.BooksTracker;
+//import com.cognixia.jump.dao.BooksTracker;
 import com.cognixia.jump.dao.BooksTrackerDAO;
 import com.cognixia.jump.dao.BooksTrackerDAOImpl;
-import com.cognixia.jump.dao.Tracker;
+//import com.cognixia.jump.dao.Tracker;
 import com.cognixia.jump.dao.User;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -49,7 +49,10 @@ public class Main {
 		
 		//try {
 			if (LoggedInUser != null) {
-				getUserChoice(LoggedInUser, null, 0, null, input);
+				
+				int user_id = booksTrackerDao.getUserByUsername(LoggedInUser.getUsername());
+				int user_tracker_id = booksTrackerDao.getUserTrackerId(user_id);
+				getUserChoice(user_id, user_tracker_id, input);
 			} 
 		//} catch (SQLException e) {
 	//		System.out.println("Could not close connection properly");
@@ -146,23 +149,33 @@ public class Main {
 		
 	}
 	
-	static Object[] getBookAddToTracker() {
+	public static int getBookId() {
 		Scanner input = new Scanner(System.in);
-		Object[] newBookToTrack = new Object[3];
-		for (int i = 0; i < newBookToTrack.length; i++) {
+		int book_id = -1;
+//		for (int i = 0; i < newBookToTrack.length; i++) {
 				System.out.println("Please enter book id: ");
-				newBookToTrack[0] = input.nextInt();
+				book_id = input.nextInt();
 				
-				System.out.println("Please enter tracker id: ");
-				newBookToTrack[1] = input.nextInt();
+//				System.out.println("Please enter tracker id: ");
+//				newBookToTrack[1] = input.nextInt();
 				
-				System.out.println("Please enter completion (added to list, started, completed : ");
-				newBookToTrack[2] = input.nextLine().trim();
+//				System.out.println("Please enter completion (added to list, started, completed : ");
+//				newBookToTrack[2] = input.nextLine().trim();
 
-		}
+//		}
 		
-		return newBookToTrack;
+		return book_id;
 		
+	}
+	
+	public static String getCompletion() {
+		Scanner input = new Scanner(System.in);
+		String completion = "";
+		
+		System.out.println("Please enter completion (added to list, started, completed : ");
+		completion = input.nextLine().trim();
+		
+		return completion;
 	}
 
 	public static User getInitialChoice(Scanner input) {
@@ -210,10 +223,10 @@ public class Main {
 		
 	}
 
-	public static void getUserChoice(User user, Book book, int tracker_id, String completion, Scanner input) {
+	public static void getUserChoice(int user_id, int tracker_id, Scanner input) {
 		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
 		int choice;
-		do {
+//		do {
 			choice = getUserInput(input);
 
 			switch (choice) {
@@ -221,7 +234,7 @@ public class Main {
 					// view all books in tracker
 					List<Book> trackers = new ArrayList<Book>();
 					//List<Tracker> trackers = new ArrayList<Tracker>();
-					trackers = booksTrackerDao.getAllByUserId(user);
+					trackers = booksTrackerDao.getAllByUserId(user_id);
 					//trackers = 
 					for (int i = 0; i < trackers.size(); i++) {
 						System.out.println(trackers.get(i));
@@ -229,9 +242,19 @@ public class Main {
 					break;
 				case 2:
 					// add a book to the tracker
-					Object[] newBookToTrack = getBookAddToTracker();
-					BooksTracker LoggedInUser = new BooksTracker(newBookToTrack[0], newBookToTrack[1],newBookToTrack[2]);
-					boolean isAdded = booksTrackerDao.addBookToTracker(book, tracker_id, completion);
+					
+					int book_id = -1;
+					String completion = "";
+					
+					for (int i = 0; i < 2; i++) {
+						if (i == 0) {
+							book_id = getBookId();
+						} else {
+							completion = getCompletion();
+						}
+					};
+					
+					boolean isAdded = booksTrackerDao.addBookToTracker( book_id, tracker_id, completion);
 					
 					if(isAdded) {
 						System.out.println("Book added to the tracker successfully!");
@@ -242,11 +265,11 @@ public class Main {
 				case 3:
 					// Update book status in user's tracker
 					
-					booksTrackerDao.updateBookStatus(completion, tracker_id, book);
+//					booksTrackerDao.updateBookStatus(completion, tracker_id, book);
 					break;
 				case 4:
 					// delete a book in tracker
-					booksTrackerDao.removeBookFromTracker(tracker_id, book);
+//					booksTrackerDao.removeBookFromTracker(tracker_id, book);
 					break;
 				case 5:
 					// quit
@@ -256,7 +279,7 @@ public class Main {
 					System.out.println("Not a valid input. Try again");
 
 			}
-		} while (choice != 5);
+//		} while (choice != 5);
 	}
 
 }

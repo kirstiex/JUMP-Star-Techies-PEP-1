@@ -210,7 +210,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 		
 		@Override
-		public int getUserTrackerId(User user) {
+		public int getUserTrackerId(int user_id) {
 			int user_tracker_id = -1;
 			
 			try {
@@ -219,7 +219,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				
 				ResultSet rs = stmt.executeQuery("select trackers.tracker_id from users"
 												+ "join trackers on trackers.user_id = users.user_id\r\n"
-												+ "where users.user_id = " + user.getId());
+												+ "where users.user_id = " + user_id);
 				
 				if(rs.next()) {
 					user_tracker_id = rs.getInt(1);
@@ -232,7 +232,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public List<Book> getAllByUserId(User user) {
+		public List<Book> getAllByUserId(int user_id) {
 			List<Book> tracker = new ArrayList<>();
 			
 			try {
@@ -245,7 +245,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 												+ "join books_trackers on books.book_id = books_trackers.book_id "
 												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id "
 												+ "join users on users.user_id = trackers.user_id "
-												+ "where users.user_id =" + user.getId() +";");
+												+ "where users.user_id =" + user_id +";");
 				
 				while(rs.next()) {
 					tracker.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
@@ -257,7 +257,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public boolean addBookToTracker(Book book, int tracker_id, String completion) {
+		public boolean addBookToTracker(int book_id, int tracker_id, String completion) {
 			boolean result = false;
 			
 			Connection conn = null;
@@ -276,7 +276,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, book.getId());
+				pstmt.setInt(1, book_id);
 				pstmt.setInt(2, tracker_id);
 				pstmt.setString(3, completion);
 				
@@ -290,7 +290,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public boolean updateBookStatus(String completion, int tracker_id, Book book) {
+		public boolean updateBookStatus(String completion, int tracker_id, int book_id) {
 			
 			boolean result = false;
 			
@@ -312,7 +312,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, completion);
-				pstmt.setInt(2, book.getId());
+				pstmt.setInt(2, book_id);
 				pstmt.setInt(3, tracker_id);
 				
 				
@@ -326,7 +326,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public boolean removeBookFromTracker(int tracker_id, Book book) {
+		public boolean removeBookFromTracker(int tracker_id, int book_id) {
 			boolean result = false;
 			
 			Connection conn = null;
@@ -345,7 +345,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			
 			try {
 				PreparedStatement pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, book.getId());
+				pstmt.setInt(1, book_id);
 				pstmt.setInt(2, tracker_id);
 				
 				
@@ -356,6 +356,29 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 			}
 			
 			return result;
+		}
+
+		@Override
+		public int getUserByUsername(String username) {
+			int user_id = -1;
+			
+			try {
+				Connection conn = ConnectionManager.getConnection();
+				Statement stmt = conn.createStatement();
+				
+			
+				ResultSet rs = stmt.executeQuery("select user_id "
+												+ "from users " 
+												+ "where users.username =" + username +";");
+				
+				if(rs.next()) {
+					user_id = rs.getInt(1);
+				}
+			} catch (SQLException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			
+			return user_id;
 		}
 
 }
