@@ -359,24 +359,52 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public int getUserByUsername(String username) {
+		public int getUserByUsername(String user_name) {
 			int user_id = -1;
 			
+			String sql = "select user_id from users where username=?";
+			Connection conn = null;
 			try {
-				Connection conn = ConnectionManager.getConnection();
-				Statement stmt = conn.createStatement();
+				conn = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, user_name);
 				
-			
 				ResultSet rs = stmt.executeQuery("select user_id "
 												+ "from users " 
 												+ "where users.username = " + username +";");
+
 				
+				ResultSet rs = pstmt.executeQuery();
 				if(rs.next()) {
-					user_id = rs.getInt(1);
-				}
-			} catch (SQLException | ClassNotFoundException e) {
+				user_id = rs.getInt(1);
+			}
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+			
+//			try {
+//				Connection conn = ConnectionManager.getConnection();
+//				Statement stmt = conn.createStatement();
+//				
+//			
+//				ResultSet rs = stmt.executeQuery("select user_id "
+//												+ "from users " 
+//												+ "where username=" + user_name);
+//				
+//				if(rs.next()) {
+//					user_id = rs.getInt(1);
+//				}
+//			} catch (SQLException | ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
 			
 			return user_id;
 		}

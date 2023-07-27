@@ -45,16 +45,17 @@ public class Main {
 		// TEST THE REST OF YOUR METHODS IN THE DAO FROM THIS LINE FORWARD
 		Scanner input = new Scanner(System.in);
 		displayMenu();
-		getInitialChoice(input);
-//		System.out.println(username.equals(""));
+
+		String user_name = getInitialChoice(input);
 		
 		//try {
-//			if (!username.equals("")) {
-//				
-//				int user_id = booksTrackerDao.getUserByUsername(username);
-//				int user_tracker_id = booksTrackerDao.getUserTrackerId(user_id);
-//				getUserChoice(user_id, user_tracker_id, input);
-//			} 
+			if (!user_name.equals("")) {
+				
+				int user_id = booksTrackerDao.getUserByUsername(user_name);
+				int user_tracker_id = booksTrackerDao.getUserTrackerId(user_id);
+				getUserChoice(user_id, user_tracker_id, input);
+			} 
+
 		//} catch (SQLException e) {
 	//		System.out.println("Could not close connection properly");
 	//	}
@@ -191,8 +192,8 @@ public class Main {
 
 	public static String getInitialChoice(Scanner input) {
 		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
-		int choice;
 		String username = "";
+		int choice;
 		
 		do {
 			choice = getInitialInput(input);
@@ -216,7 +217,8 @@ public class Main {
 					//need to change this to return the logged in user. 
 					username = user[0];
 					loginMenu();
-//					return username;
+
+					return username;
 				} else {
 					System.out.println("Incorrect credentials");
 					displayMenu();
