@@ -170,6 +170,16 @@ public class Main {
 		
 	}
 	
+	public static int getUserId() {
+		Scanner input = new Scanner(System.in);
+		
+		
+		System.out.println("User Id");
+		int userid = input.nextInt();
+		
+		return userid;
+	}
+	
 	public static String getCompletion() {
 		Scanner input = new Scanner(System.in);
 		String completion = "";
@@ -236,10 +246,11 @@ public class Main {
 			switch (choice) {
 				case 1:
 					// view all books in tracker
+					int user_id2 = getUserId();
 					List<Book> trackers = new ArrayList<Book>();
-					//List<Tracker> trackers = new ArrayList<Tracker>();
-					trackers = booksTrackerDao.getAllByUserId(user_id);
-					//trackers = 
+					
+					trackers = booksTrackerDao.getAllByUserId(user_id2);
+					
 					for (int i = 0; i < trackers.size(); i++) {
 						System.out.println(trackers.get(i));
 					}
@@ -271,7 +282,21 @@ public class Main {
 					break;
 				case 4:
 					// delete a book in tracker
-//					booksTrackerDao.removeBookFromTracker(tracker_id, book);
+					List<Book> books = new ArrayList<Book>();
+					books = booksTrackerDao.getAll();
+
+					for (int i = 0; i < books.size(); i++) {
+						System.out.println(books.get(i));
+					}
+					
+					book_id = getBookId();	
+					boolean isDeleted = booksTrackerDao.removeBookFromTracker(tracker_id, book_id);
+					
+					if(isDeleted) {
+						System.out.println("Book  Deleted successfully!");
+					} else {
+						System.out.println("Failed to delete the book to the tracker.");
+					}
 					break;
 				case 5:
 					// quit

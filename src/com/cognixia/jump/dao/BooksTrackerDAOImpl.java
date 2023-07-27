@@ -377,6 +377,10 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				PreparedStatement pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, user_name);
 				
+				ResultSet rs = stmt.executeQuery("select user_id "
+												+ "from users " 
+												+ "where users.username = " + username +";");
+
 				
 				ResultSet rs = pstmt.executeQuery();
 				if(rs.next()) {
