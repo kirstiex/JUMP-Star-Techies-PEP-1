@@ -1,4 +1,5 @@
 package com.cognixia.jump.dao;
+import com.cognixia.jump.Main;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -238,12 +239,13 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				Connection conn = ConnectionManager.getConnection();
 				Statement stmt = conn.createStatement();
 				
+			
 				ResultSet rs = stmt.executeQuery("select *"
-												+ "from books" 
-												+ "join books_trackers on books.book_id = books_trackers.book_id"
-												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id"
+												+ "from books " 
+												+ "join books_trackers on books.book_id = books_trackers.book_id "
+												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id "
 												+ "join users on users.user_id = trackers.user_id"
-												+ "where users.user_id =" + user.getId() +";");
+												+ "where users.user_id =" + Main.getLoggedInUser().getId() +";");
 				
 				while(rs.next()) {
 					tracker.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
@@ -325,7 +327,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 
 		@Override
 		public boolean removeBookFromTracker(int tracker_id, Book book) {
-boolean result = false;
+			boolean result = false;
 			
 			Connection conn = null;
 			try {
