@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 import com.cognixia.jump.dao.Book;
+import com.cognixia.jump.dao.BooksTracker;
 import com.cognixia.jump.dao.BooksTrackerDAO;
 import com.cognixia.jump.dao.BooksTrackerDAOImpl;
 import com.cognixia.jump.dao.Tracker;
@@ -127,6 +128,8 @@ public class Main {
 	}
 
 	static String[] getCredential() {
+		
+		//TODO: find way to insert into User the user_id
 		Scanner input = new Scanner(System.in);
 		String[] user = new String[2];
 		for (int i = 0; i < user.length; i++) {
@@ -140,6 +143,25 @@ public class Main {
 		}
 		
 		return user;
+		
+	}
+	
+	static Object[] getBookAddToTracker() {
+		Scanner input = new Scanner(System.in);
+		Object[] newBookToTrack = new Object[3];
+		for (int i = 0; i < newBookToTrack.length; i++) {
+				System.out.println("Please enter book id: ");
+				newBookToTrack[0] = input.nextInt();
+				
+				System.out.println("Please enter tracker id: ");
+				newBookToTrack[1] = input.nextInt();
+				
+				System.out.println("Please enter completion (added to list, started, completed : ");
+				newBookToTrack[2] = input.nextLine().trim();
+
+		}
+		
+		return newBookToTrack;
 		
 	}
 
@@ -197,19 +219,29 @@ public class Main {
 			switch (choice) {
 				case 1:
 					// view all books in tracker
-					List<Book> booksinTracker = new ArrayList<Book>();
-					List<Tracker> trackers = new ArrayList<Tracker>();
-					booksinTracker = booksTrackerDao.getAllByUserId(user);
+					List<Book> trackers = new ArrayList<Book>();
+					//List<Tracker> trackers = new ArrayList<Tracker>();
+					trackers = booksTrackerDao.getAllByUserId(user);
+					//trackers = 
 					for (int i = 0; i < trackers.size(); i++) {
 						System.out.println(trackers.get(i));
 					}
 					break;
 				case 2:
 					// add a book to the tracker
-					booksTrackerDao.addBookToTracker(book, tracker_id, completion);
+					Object[] newBookToTrack = getBookAddToTracker();
+					BooksTracker LoggedInUser = new BooksTracker(newBookToTrack[0], newBookToTrack[1],newBookToTrack[2]);
+					boolean isAdded = booksTrackerDao.addBookToTracker(book, tracker_id, completion);
+					
+					if(isAdded) {
+						System.out.println("Book added to the tracker successfully!");
+					} else {
+						System.out.println("Failed to add the book to the tracker.");
+					}
 					break;
 				case 3:
 					// Update book status in user's tracker
+					
 					booksTrackerDao.updateBookStatus(completion, tracker_id, book);
 					break;
 				case 4:
