@@ -211,24 +211,24 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		
 		@Override
 		public int getUserTrackerId(int user_id) {
-			int user_tracker_id = -1;
+			//int user_tracker_id = -1;
 			
 			try {
 				Connection conn = ConnectionManager.getConnection();
 				Statement stmt = conn.createStatement();
 				
-				ResultSet rs = stmt.executeQuery("select trackers.tracker_id from users"
-												+ "join trackers on trackers.user_id = users.user_id\r\n"
+				ResultSet rs = stmt.executeQuery("select trackers.tracker_id from users "
+												+ "join trackers on trackers.user_id = users.user_id "
 												+ "where users.user_id = " + user_id);
 				
 				if(rs.next()) {
-					user_tracker_id = rs.getInt(1);
+					user_id = rs.getInt(1);
 				}
 			} catch (SQLException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 			
-			return user_tracker_id;
+			return user_id;
 		}
 
 		@Override
@@ -245,7 +245,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 												+ "join books_trackers on books.book_id = books_trackers.book_id "
 												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id "
 												+ "join users on users.user_id = trackers.user_id "
-												+ "where users.user_id =" + user_id +";");
+												+ "where users.user_id = " + user_id +";");
 				
 				while(rs.next()) {
 					tracker.add(new Book(rs.getInt(1), rs.getString(2), rs.getString(3)));
@@ -271,7 +271,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				e.printStackTrace();
 			}
 			
-			String sql = "insert into books_trackers(book_id, tracker_id, completion)"
+			String sql = "insert into books_trackers(book_id, tracker_id, completion) "
 						+ "values (?, ?, ?)";
 			
 			try {
@@ -305,8 +305,8 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				e.printStackTrace();
 			}
 			
-			String sql = "update books_trackers"
-						+ "set completion = ?"
+			String sql = "update books_trackers "
+						+ "set completion = ? "
 						+ "where book_id = ? and tracker_id = ?;";
 			
 			try {
@@ -340,7 +340,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				e.printStackTrace();
 			}
 			
-			String sql = "delete from books_trackers"
+			String sql = "delete from books_trackers "
 						+ "where book_id = ? and tracker_id = ?;";
 			
 			try {
@@ -359,24 +359,48 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 		}
 
 		@Override
-		public int getUserByUsername(String username) {
+		public int getUserByUsername(String user_name) {
 			int user_id = -1;
 			
+			String sql = "select user_id from users where username=?";
+			Connection conn = null;
 			try {
-				Connection conn = ConnectionManager.getConnection();
-				Statement stmt = conn.createStatement();
-				
-			
-				ResultSet rs = stmt.executeQuery("select user_id "
-												+ "from users " 
-												+ "where users.username =" + username +";");
-				
-				if(rs.next()) {
-					user_id = rs.getInt(1);
-				}
-			} catch (SQLException | ClassNotFoundException e) {
+				conn = ConnectionManager.getConnection();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			try {
+				PreparedStatement pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, user_name);
+				
+				
+				ResultSet rs = pstmt.executeQuery();
+				if(rs.next()) {
+				user_id = rs.getInt(1);
+			}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+//			try {
+//				Connection conn = ConnectionManager.getConnection();
+//				Statement stmt = conn.createStatement();
+//				
+//			
+//				ResultSet rs = stmt.executeQuery("select user_id "
+//												+ "from users " 
+//												+ "where username=" + user_name);
+//				
+//				if(rs.next()) {
+//					user_id = rs.getInt(1);
+//				}
+//			} catch (SQLException | ClassNotFoundException e) {
+//				e.printStackTrace();
+//			}
 			
 			return user_id;
 		}
