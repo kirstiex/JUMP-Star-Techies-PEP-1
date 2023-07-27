@@ -240,7 +240,7 @@ public class BooksTrackerDAOImpl implements BooksTrackerDAO{
 				Statement stmt = conn.createStatement();
 				
 			
-				ResultSet rs = stmt.executeQuery("select *"
+				ResultSet rs = stmt.executeQuery("select books.book_id, books.book_name, books.author, trackers.tracker_id, books_trackers.completion "
 												+ "from books " 
 												+ "join books_trackers on books.book_id = books_trackers.book_id "
 												+ "join trackers on trackers.tracker_id = books_trackers.tracker_id "

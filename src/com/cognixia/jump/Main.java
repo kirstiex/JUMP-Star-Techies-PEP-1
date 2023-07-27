@@ -7,6 +7,7 @@ import java.util.Scanner;
 import com.cognixia.jump.dao.Book;
 import com.cognixia.jump.dao.BooksTrackerDAO;
 import com.cognixia.jump.dao.BooksTrackerDAOImpl;
+import com.cognixia.jump.dao.Tracker;
 import com.cognixia.jump.dao.User;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
@@ -24,8 +25,6 @@ import java.util.List;
  */
 
 public class Main {
-
-	//private static User loggedInUser;
 	
 	public static void main(String[] args) {
 
@@ -64,10 +63,6 @@ public class Main {
 		}
 	}
 
-	//public static User getLoggedInUser() {
-   //     return loggedInUser;
-   // }
-	
 	// print the menu to the command line.
 	public static void displayMenu() {
 		// login -- show all books --- add book to tracker ---- update the tracker ---
@@ -202,21 +197,25 @@ public class Main {
 			switch (choice) {
 				case 1:
 					// view all books in tracker
-					List<Book> trackers = new ArrayList<Book>();
-					trackers = booksTrackerDao.getAllByUserId(user);
+					List<Book> booksinTracker = new ArrayList<Book>();
+					List<Tracker> trackers = new ArrayList<Tracker>();
+					booksinTracker = booksTrackerDao.getAllByUserId(user);
 					for (int i = 0; i < trackers.size(); i++) {
 						System.out.println(trackers.get(i));
 					}
+					break;
 				case 2:
 					// add a book to the tracker
-					
 					booksTrackerDao.addBookToTracker(book, tracker_id, completion);
+					break;
 				case 3:
 					// Update book status in user's tracker
 					booksTrackerDao.updateBookStatus(completion, tracker_id, book);
+					break;
 				case 4:
 					// delete a book in tracker
 					booksTrackerDao.removeBookFromTracker(tracker_id, book);
+					break;
 				case 5:
 					// quit
 					System.out.println("Thank you. Have a great day!");
@@ -225,7 +224,7 @@ public class Main {
 					System.out.println("Not a valid input. Try again");
 
 			}
-		} while (choice != 6);
+		} while (choice != 5);
 	}
 
 }
