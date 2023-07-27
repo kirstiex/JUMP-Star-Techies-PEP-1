@@ -45,19 +45,22 @@ public interface BooksTrackerDAO {
 	// is added to the database.
 //	public Book add(Book book);
 	
+	// Find user by username
+	public int getUserByUsername(String username);
+	
 	// Return user's tracker id
-	public int getUserTrackerId(User user);
+	public int getUserTrackerId(int user_id);
 	
 	// Return all books in the tracker belong to user
-	public List<Book> getAllByUserId(User user);
+	public List<Book> getAllByUserId(int user_id);
 	
 	// Add book to user's tracker
-	public boolean addBookToTracker(Book book, int tracker_id, String completion);
+	public boolean addBookToTracker(int book_id, int tracker_id, String completion);
 	
 	// Update book status in user's tracker
-	public boolean updateBookStatus(String completion, int tracker_id, Book book);
+	public boolean updateBookStatus(String completion, int tracker_id, int book_id);
 	
 	// REmove book from user's tracker
-	public boolean removeBookFromTracker(int tracker_id, Book book);
+	public boolean removeBookFromTracker(int tracker_id, int book_id);
 	
 }
