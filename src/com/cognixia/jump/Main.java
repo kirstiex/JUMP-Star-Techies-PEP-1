@@ -123,7 +123,7 @@ public class Main {
 			}
 			catch(InputMismatchException e) {
 				input.nextLine(); 
-				System.out.println("Invalid input. Please enter a valid number (1 - 3).");
+				System.out.println("Invalid input. Please enter a valid number (1 - 5).");
 	        }
 		} while(!validChoice);
 		return userChoice;
@@ -241,20 +241,11 @@ public class Main {
 					}
 					break;
 				case 2:
-					// add a book to the tracker
+					// add a book to the tracker				
+					int book_id = getBookId();	
+					String completion = getCompletion();
 					
-					int book_id = -1;
-					String completion = "";
-					
-					for (int i = 0; i < 2; i++) {
-						if (i == 0) {
-							book_id = getBookId();
-						} else {
-							completion = getCompletion();
-						}
-					};
-					
-					boolean isAdded = booksTrackerDao.addBookToTracker( book_id, tracker_id, completion);
+					boolean isAdded = booksTrackerDao.addBookToTracker(book_id, tracker_id, completion);
 					
 					if(isAdded) {
 						System.out.println("Book added to the tracker successfully!");
@@ -264,8 +255,15 @@ public class Main {
 					break;
 				case 3:
 					// Update book status in user's tracker
+					book_id = getBookId();	
+					completion = getCompletion();
+					boolean isUpdated = booksTrackerDao.updateBookStatus(completion, tracker_id, book_id);
 					
-//					booksTrackerDao.updateBookStatus(completion, tracker_id, book);
+					if(isUpdated) {
+						System.out.println("Book updated to the tracker successfully!");
+					} else {
+						System.out.println("Failed to update the book to the tracker.");
+					}
 					break;
 				case 4:
 					// delete a book in tracker
