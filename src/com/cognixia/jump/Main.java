@@ -45,12 +45,12 @@ public class Main {
 		// TEST THE REST OF YOUR METHODS IN THE DAO FROM THIS LINE FORWARD
 		Scanner input = new Scanner(System.in);
 		displayMenu();
-		User LoggedInUser = getInitialChoice(input);
+		String user_name = getInitialChoice(input);
 		
 		//try {
-			if (LoggedInUser != null) {
+			if (!user_name.equals("")) {
 				
-				int user_id = booksTrackerDao.getUserByUsername(LoggedInUser.getUsername());
+				int user_id = booksTrackerDao.getUserByUsername(user_name);
 				int user_tracker_id = booksTrackerDao.getUserTrackerId(user_id);
 				getUserChoice(user_id, user_tracker_id, input);
 			} 
@@ -178,8 +178,9 @@ public class Main {
 		return completion;
 	}
 
-	public static User getInitialChoice(Scanner input) {
+	public static String getInitialChoice(Scanner input) {
 		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
+		String username = "";
 		int choice;
 		
 		do {
@@ -202,9 +203,9 @@ public class Main {
 				if (check) {
 					System.out.println("Log in successfully!");
 					//need to change this to return the logged in user. 
-					User LoggedInUser = new User(2, user[0], user[1]);
+					username = user[0];
 					loginMenu();
-					return LoggedInUser;
+					return username;
 				} else {
 					System.out.println("Incorrect credentials");
 					displayMenu();
@@ -219,14 +220,14 @@ public class Main {
 			}
 		}
 		while (choice != 3);
-		return null;
+		return username;
 		
 	}
 
 	public static void getUserChoice(int user_id, int tracker_id, Scanner input) {
 		BooksTrackerDAO booksTrackerDao = new BooksTrackerDAOImpl();
 		int choice;
-//		do {
+		do {
 			choice = getUserInput(input);
 
 			switch (choice) {
@@ -277,7 +278,7 @@ public class Main {
 					System.out.println("Not a valid input. Try again");
 
 			}
-//		} while (choice != 5);
+		} while (choice != 5);
 	}
 
 }
